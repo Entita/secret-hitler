@@ -15,7 +15,7 @@ router.post("/lobby/create", async (req, res) => {
 
 router.post("/lobby/:id", (req, res) => {
   console.log(req.sessionID);
-  
+  req.session.test = 1;
   try {
     const lobbyID = req.params.id;
 
@@ -30,7 +30,7 @@ router.post("/lobby/:id", (req, res) => {
 
 router.get("/lobby/:id", (req, res) => {
   console.log(req.sessionID);
-  
+  req.session.test = 1;
   try {
     const lobbyID = req.params.id;
 
