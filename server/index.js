@@ -5,9 +5,8 @@ const mongoose = require("mongoose");
 const session = require("express-session");
 
 const router = require("./handlers/routes");
-console.log(process.env,process.env.MONGOOSE )
 if (!process.env.mongoose) require("dotenv").config({ path: ".env.local" });
-console.log(process.env, process.env.MONGOOSE)
+
 // Mongo database
 mongoose.connect(process.env.MONGOOSE, {
   useNewUrlParser: true,
@@ -24,7 +23,7 @@ const app = express();
 app.set("trust proxy", 1);
 app.use(
   session({
-    secret: process.env.session_secret,
+    secret: process.env.SESSION_SECRET,
     saveUninitialized: true,
     resave: false,
     cookie: {
