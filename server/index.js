@@ -5,11 +5,11 @@ const mongoose = require("mongoose");
 const session = require("express-session");
 
 const router = require("./handlers/routes");
-
+console.log(process.env,process.env.MONGOOSE )
 if (!process.env.mongoose) require("dotenv").config({ path: ".env.local" });
-
+console.log(process.env, process.env.MONGOOSE)
 // Mongo database
-mongoose.connect(process.env.mongoose, {
+mongoose.connect(process.env.MONGOOSE, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });
