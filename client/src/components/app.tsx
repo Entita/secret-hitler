@@ -1,5 +1,4 @@
 import { Routes, Route } from "react-router-dom";
-import { io } from "socket.io-client";
 import Lobby from "./lobby/lobby";
 import LobbyCreate from "./lobby/lobby_create";
 import LobbyCrossroads from "./lobby/lobby_crossroads";
