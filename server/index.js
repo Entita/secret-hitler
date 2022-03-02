@@ -6,10 +6,9 @@ const session = require("express-session");
 
 const router = require("./handlers/routes");
 
-require("dotenv").config({ path: ".env.local" });
+if (!process.env.mongoose) require("dotenv").config({ path: ".env.local" });
 
 // Mongo database
-console.log('AAA', process.env, process.env.mongoose)
 mongoose.connect(process.env.mongoose, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
@@ -22,7 +21,7 @@ mongoose.connection.on("connected", () => {
 // Express
 const app = express();
 
-app.set('trust proxy', 1)
+app.set("trust proxy", 1);
 app.use(
   session({
     secret: process.env.session_secret,
@@ -41,7 +40,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use("/", router);
 
-const PORT = 4000;
+const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}.`);
 });
