@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { getServerAdress } from "../../utils/config";
 import {
   LobbyButtonSmallStyled,
   CreateButtonContainerStyled,
@@ -21,7 +22,7 @@ export default function LobbyCreate() {
   const fetchData = async () => {
     setLoadingText("Creating the lobby ...");
     setShowLoader(true);
-    await fetch("http://localhost:4000/lobby/create", {
+    await fetch(getServerAdress() + "/lobby/create", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({

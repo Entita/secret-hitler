@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import { getServerAdress } from "../../utils/config";
 
 export default function Lobby() {
   const params = useParams();
@@ -10,7 +11,7 @@ export default function Lobby() {
   const code = params.id;
 
   useEffect(() => {
-    fetch("http://localhost:4000/lobby/" + code, {
+    fetch(getServerAdress() + "/lobby/" + code, {
       method: "GET",
       // credentials: "same-origin",
       // headers: { "Content-Type": "application/json" },

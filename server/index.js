@@ -5,7 +5,7 @@ const mongoose = require("mongoose");
 const session = require("express-session");
 
 const router = require("./handlers/routes");
-if (!process.env.mongoose) require("dotenv").config({ path: ".env.local" });
+if (!process.env.MONGOOSE) require("dotenv").config({ path: ".env.local" });
 
 // Mongo database
 mongoose.connect(process.env.MONGOOSE, {
