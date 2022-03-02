@@ -9,6 +9,7 @@ const router = require("./handlers/routes");
 require("dotenv").config({ path: ".env.local" });
 
 // Mongo database
+console.log('AAA', process.env, process.env.mongoose)
 mongoose.connect(process.env.mongoose, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
