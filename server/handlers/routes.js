@@ -1,6 +1,14 @@
 const express = require("express");
 const router = express.Router();
-const { createLobby, joinLobby } = require("./mongo");
+const {
+  createLobby,
+  joinLobby,
+  isPlayerInLobby,
+  isLobbyFull,
+  doesLobbyExist,
+  createdLobby,
+  getPlayersFromLobby,
+} = require("./mongo");
 
 router.post("/lobby/create", async (req, res) => {
   try {
@@ -13,30 +21,57 @@ router.post("/lobby/create", async (req, res) => {
   }
 });
 
-router.post("/lobby/:id", (req, res) => {
-  console.log(req.sessionID);
-  req.session.test = 1;
+router.post("/lobby/:id", async (req, res) => {
   try {
+    // Session inicialization
+    req.session.doesLobbyExist = false;
+    req.session.isPlayerInLobby = false;
+    req.session.isLobbyFull = false;
+    req.session.joinedLobby = false;
+    req.session.createdLobby = false;
+    req.session.players = [];
+
     const lobbyID = req.params.id;
+    const lobbyExists = (req.session.doesLobbyExist = await doesLobbyExist(
+      lobbyID
+    ));
 
-    // joinLobby(lobbyID)
+    if (lobbyExists) {
+      const playerInLobby = (req.session.isPlayerInLobby =
+        await isPlayerInLobby(lobbyID, req.sessionID));
+      req.session.createdLobby = await createdLobby(lobbyID, req.sessionID);
 
-    res.send(JSON.stringify(lobbyID));
+      if (!playerInLobby) {
+        const lobbyFull = (req.session.isLobbyFull = await isLobbyFull(
+          lobbyID
+        ));
+
+        if (!lobbyFull) {
+          req.session.joinedLobby = await joinLobby(lobbyID, req.sessionID);
+        }
+      }
+    }
+
+    if (req.session.isPlayerInLobby || req.session.joinedLobby) {
+      req.session.players = await getPlayersFromLobby(lobbyID);
+    }
+
+    res.send(req.session);
   } catch (err) {
     console.error(err);
     res.sendStatus(403);
   }
 });
 
-router.get("/lobby/:id", (req, res) => {
-  console.log(req.sessionID);
-  req.session.test = 1;
+router.post("/lobby/update_players/:id", async (req, res) => {
   try {
     const lobbyID = req.params.id;
 
-    // joinLobby(lobbyID)
-
-    res.send(JSON.stringify(lobbyID));
+    if (req.session.isPlayerInLobby || req.session.joinedLobby) {
+      req.session.players = await getPlayersFromLobby(lobbyID);
+    }
+  
+    res.send(req.session);
   } catch (err) {
     console.error(err);
     res.sendStatus(403);
