@@ -11,8 +11,8 @@ const server = require(protocol).createServer();
 const io = require("socket.io")(server, {
   cors: {
     credentials: true,
-    origin: "http://localhost:3000",
-    methods: ["GET", "POST"],
+    origin: ["http://localhost:3000", "https://secret-hitler.eu"],
+    methods: ["GET", "POST", "PUT", "DELETE"],
   },
 });
 
@@ -51,8 +51,9 @@ app.use(
     resave: false, //don't save session if unmodified
     cookie: {
       maxAge: 4 * 60 * 60, // = 4 hours
-      sameSite: process.env.MONGOOSE ? "none" : "lax",
-      secure: process.env.MONGOOSE,
+      httpOnly: false,
+      sameSite: process.env.MONGOOSE ? "lax" : "none",
+      secure: process.env.MONGOOSE ? false : true,
     },
   })
 );
