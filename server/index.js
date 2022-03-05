@@ -4,9 +4,13 @@ const cors = require("cors");
 const mongoose = require("mongoose");
 const session = require("express-session");
 const MongoStore = require("connect-mongo");
-const server = require("https").createServer();
+
+let protocol = "https";
+if (!process.env.MONGOOSE) protocol = "http";
+const server = require(protocol).createServer();
 const io = require("socket.io")(server, {
   cors: {
+    credentials: true,
     origin: "http://localhost:3000",
     methods: ["GET", "POST"],
   },
@@ -46,8 +50,9 @@ app.use(
     saveUninitialized: true, // don't create session until something stored
     resave: false, //don't save session if unmodified
     cookie: {
-      secure: false,
       maxAge: 4 * 60 * 60, // = 4 hours
+      sameSite: process.env.MONGOOSE ? "none" : "lax",
+      secure: process.env.MONGOOSE,
     },
   })
 );
