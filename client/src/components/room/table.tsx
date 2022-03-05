@@ -34,13 +34,13 @@ export default function Table() {
       />
 
       <VotingCard type="ja" size={100} />
-      {/* <VotingCard type='nein' size={100} /> */}
+      <VotingCard type='nein' size={100} />
 
       <RoleCard type="fascist" size={100} show={false} />
-      {/* <RoleCard type="liberal" size={100} show={true} />
-      <RoleCard type="hitler" size={100} show={true} /> */}
+      <RoleCard type="liberal" size={100} show={true} />
+      <RoleCard type="hitler" size={100} show={true} />
       <GovernmentIndicator type="chancellor" rotate={-12.5} size={200} />
-      {/* <GovernmentIndicator type="president" rotate={-8} size={150} /> */}
+      <GovernmentIndicator type="president" rotate={-8} size={150} />
     </TableStyled>
   );
 }
