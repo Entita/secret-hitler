@@ -2,8 +2,8 @@ const express = require("express");
 const helmet = require("helmet");
 const cors = require("cors");
 const mongoose = require("mongoose");
-const session = require("express-session");
 const MongoStore = require("connect-mongo");
+const session = require("express-session");
 
 const router = require("./handlers/routes");
 const socketHandler = require("./handlers/socket.io");
@@ -50,22 +50,20 @@ app.use(helmet());
 app.use(
   cors({
     credentials: true,
-    origin: ["http://localhost:4000", "https://secret-hitler.eu"],
+    origin: ["https://secret-hitler.eu", "http://localhost:4000"],
   })
 );
-app.options("*", cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use("/", router);
 
 // Socket.io
-const protocol = process.env.NODE_ENV === "production" ? "https" : "http";
-const server = require(protocol).createServer(app);
+// const protocol = process.env.NODE_ENV === "production" ? "https" : "http";
+const server = require("http").createServer(app);
 const io = require("socket.io")(server, {
   cors: {
     credentials: true,
     origin: "*",
-    methods: ["GET", "POST", "PUT", "DELETE"],
   },
 });
 
