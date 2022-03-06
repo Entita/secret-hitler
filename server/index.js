@@ -48,7 +48,7 @@ app.use(
       autoRemove: "native", // auto remove expired sessions
     }),
     saveUninitialized: true, // don't create session until something stored
-    resave: false, //don't save session if unmodified
+    resave: true, //don't save session if unmodified
     rolling: true,
     proxy: true,
     cookie: {
