@@ -50,7 +50,7 @@ app.use(helmet());
 app.use(
   cors({
     credentials: true,
-    origin: ["https://secret-hitler.eu", "http://localhost:4000"],
+    origin: true,
   })
 );
 app.use(express.json());
@@ -58,7 +58,6 @@ app.use(express.urlencoded({ extended: true }));
 app.use("/", router);
 
 // Socket.io
-// const protocol = process.env.NODE_ENV === "production" ? "https" : "http";
 const server = require("http").createServer(app);
 const io = require("socket.io")(server, {
   cors: {
