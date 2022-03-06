@@ -22,18 +22,6 @@ mongoose.connection.on("connected", () => {
 
 // Express
 const app = express();
-const protocol = process.env.NODE_ENV === "production" ? "https" : "http";
-const server = require(protocol).createServer(app);
-const io = require("socket.io")(server, {
-  cors: {
-    credentials: true,
-    origin: "*",
-    methods: ["GET", "POST", "PUT", "DELETE"],
-  },
-});
-
-// Socket.io
-io.on("connection", socketHandler);
 
 if (process.env.NODE_ENV === "production") app.set("trust proxy", 1);
 app.use(
@@ -59,10 +47,29 @@ app.use(
 );
 
 app.use(helmet());
-app.use(cors({ credentials: true, origin: "*" }));
+app.use(
+  cors({
+    credentials: true,
+    origin: ["http://localhost:4000", "https://secret-hitler.eu"],
+  })
+);
+app.options("*", cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use("/", router);
+
+// Socket.io
+const protocol = process.env.NODE_ENV === "production" ? "https" : "http";
+const server = require(protocol).createServer(app);
+const io = require("socket.io")(server, {
+  cors: {
+    credentials: true,
+    origin: "*",
+    methods: ["GET", "POST", "PUT", "DELETE"],
+  },
+});
+
+io.on("connection", socketHandler);
 
 const PORT = process.env.PORT || 4000;
 server.listen(PORT, () => {
