@@ -5,19 +5,6 @@ const mongoose = require("mongoose");
 const session = require("express-session");
 const MongoStore = require("connect-mongo");
 
-const protocol = process.env.NODE_ENV === "production" ? "https" : "http";
-const server = require(protocol).createServer();
-const io = require("socket.io")(server, {
-  cors: {
-    credentials: true,
-    origin:
-      process.env.NODE_ENV === "production"
-        ? "https://secret-hitler.eu"
-        : "http://localhost:3000",
-    methods: ["GET", "POST", "PUT", "DELETE"],
-  },
-});
-
 const router = require("./handlers/routes");
 const socketHandler = require("./handlers/socket.io");
 if (process.env.NODE_ENV !== "production")
@@ -33,12 +20,23 @@ mongoose.connection.on("connected", () => {
   console.log("Connected to MongoDB");
 });
 
-// Socket.io
-io.on("connection", socketHandler);
-server.listen(3001);
-
 // Express
 const app = express();
+const protocol = process.env.NODE_ENV === "production" ? "https" : "http";
+const server = require(protocol).createServer(app);
+const io = require("socket.io")(server, {
+  cors: {
+    credentials: true,
+    origin:
+      process.env.NODE_ENV === "production"
+        ? "https://secret-hitler.eu"
+        : "http://localhost:3000",
+    methods: ["GET", "POST", "PUT", "DELETE"],
+  },
+});
+
+// Socket.io
+io.on("connection", socketHandler);
 
 if (process.env.NODE_ENV === "production") app.set("trust proxy", 1);
 app.use(
@@ -70,6 +68,6 @@ app.use(express.urlencoded({ extended: true }));
 app.use("/", router);
 
 const PORT = process.env.PORT || 4000;
-app.listen(PORT, () => {
+server.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}.`);
 });
