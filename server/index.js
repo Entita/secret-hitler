@@ -48,14 +48,14 @@ app.use(
       autoRemove: "native", // auto remove expired sessions
     }),
     saveUninitialized: true, // don't create session until something stored
-    resave: true, // false = don't save session if unmodified
+    resave: false, // don't save session if unmodified
     rolling: true,
     proxy: true,
     cookie: {
       maxAge: 4 * 60 * 60, // = 4 hours
       httpOnly: true,
-      sameSite: "lax",
-      secure: false,
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+      secure: process.env.NODE_ENV === "production",
     },
   })
 );
