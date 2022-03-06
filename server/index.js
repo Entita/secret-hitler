@@ -5,8 +5,7 @@ const mongoose = require("mongoose");
 const session = require("express-session");
 const MongoStore = require("connect-mongo");
 
-let protocol = "https";
-if (!process.env.MONGOOSE) protocol = "http";
+const protocol = process.env.NODE_ENV === "production" ? "https" : "http";
 const server = require(protocol).createServer();
 const io = require("socket.io")(server, {
   cors: {
@@ -18,7 +17,8 @@ const io = require("socket.io")(server, {
 
 const router = require("./handlers/routes");
 const socketHandler = require("./handlers/socket.io");
-if (!process.env.MONGOOSE) require("dotenv").config({ path: ".env.local" });
+if (process.env.NODE_ENV !== "production")
+  require("dotenv").config({ path: ".env.local" });
 
 // Mongo database
 mongoose.connect(process.env.MONGOOSE, {
@@ -37,7 +37,7 @@ server.listen(3001);
 // Express
 const app = express();
 
-app.set("trust proxy", 1);
+if (process.env.NODE_ENV === "production") app.set("trust proxy", 1);
 app.use(
   session({
     secret: process.env.SESSION_SECRET,
@@ -49,11 +49,13 @@ app.use(
     }),
     saveUninitialized: true, // don't create session until something stored
     resave: false, //don't save session if unmodified
+    rolling: true,
+    proxy: true,
     cookie: {
       maxAge: 4 * 60 * 60, // = 4 hours
       httpOnly: false,
-      sameSite: process.env.MONGOOSE ? "lax" : "none",
-      secure: process.env.MONGOOSE ? false : true,
+      sameSite: "lax",
+      secure: process.env.NODE_ENV === "production",
     },
   })
 );
