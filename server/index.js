@@ -62,9 +62,27 @@ app.use(
 );
 
 app.use(helmet());
-app.use(cors({ credentials: true, origin: '*' }));
+app.use(cors({ credentials: true, origin: true }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(function (req, res, next) {
+  // Website you wish to allow to connect
+  res.setHeader("Access-Control-Allow-Origin", "https://secret-hitler.eu");
+
+  res.setHeader(
+    "Access-Control-Allow-Methods",
+    "GET, POST, OPTIONS, PUT, PATCH, DELETE"
+  );
+
+  res.setHeader(
+    "Access-Control-Allow-Headers",
+    "X-Requested-With,content-type"
+  );
+
+  res.setHeader("Access-Control-Allow-Credentials", true);
+
+  next();
+});
 app.use("/", router);
 
 const PORT = process.env.PORT || 4000;
