@@ -27,6 +27,7 @@ const server = require(protocol).createServer(app);
 const io = require("socket.io")(server, {
   cors: {
     credentials: true,
+    origin: "*",
     methods: ["GET", "POST", "PUT", "DELETE"],
   },
 });
@@ -58,14 +59,10 @@ app.use(
 );
 
 app.use(helmet());
-app.use(cors({ credentials: true }));
+app.use(cors({ credentials: true, origin: "*" }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
-app.use("/", (req, res, next) => {
-  res.header("Access-Control-Allow-Origin", "*");
-  router(req, res, next);
-});
+app.use("/", router);
 
 const PORT = process.env.PORT || 4000;
 server.listen(PORT, () => {
