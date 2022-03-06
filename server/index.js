@@ -35,7 +35,7 @@ mongoose.connection.on("connected", () => {
 
 // Socket.io
 io.on("connection", socketHandler);
-server.listen(process.env.PORT || 3001);
+server.listen(3001);
 
 // Express
 const app = express();
