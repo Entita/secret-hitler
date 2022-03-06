@@ -27,10 +27,6 @@ const server = require(protocol).createServer(app);
 const io = require("socket.io")(server, {
   cors: {
     credentials: true,
-    origin:
-      process.env.NODE_ENV === "production"
-        ? "https://secret-hitler.eu"
-        : "http://localhost:3000",
     methods: ["GET", "POST", "PUT", "DELETE"],
   },
 });
@@ -62,28 +58,14 @@ app.use(
 );
 
 app.use(helmet());
-app.use(cors({ credentials: true, origin: true }));
+app.use(cors({ credentials: true }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(function (req, res, next) {
-  // Website you wish to allow to connect
-  res.setHeader("Access-Control-Allow-Origin", "https://secret-hitler.eu");
 
-  res.setHeader(
-    "Access-Control-Allow-Methods",
-    "GET, POST, OPTIONS, PUT, PATCH, DELETE"
-  );
-
-  res.setHeader(
-    "Access-Control-Allow-Headers",
-    "X-Requested-With,content-type"
-  );
-
-  res.setHeader("Access-Control-Allow-Credentials", true);
-
-  next();
+app.use("/", (req, res, next) => {
+  res.header("Access-Control-Allow-Origin", "*");
+  router(req, res, next);
 });
-app.use("/", router);
 
 const PORT = process.env.PORT || 4000;
 server.listen(PORT, () => {
