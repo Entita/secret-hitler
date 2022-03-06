@@ -1,7 +1,7 @@
 const urls = {
   server_adress: "https://secret-h1tler.herokuapp.com",
   local_server_adress: "http://localhost:4000",
-  ws_server_adress: "ws://secret-h1tler.herokuapp.com:3001",
+  ws_server_adress: "wss://secret-h1tler.herokuapp.com:3001",
   ws_local_server_adress: "ws://localhost:3001",
 };
 
