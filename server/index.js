@@ -27,6 +27,10 @@ const server = require(protocol).createServer(app);
 const io = require("socket.io")(server, {
   cors: {
     credentials: true,
+    origin:
+      process.env.NODE_ENV === "production"
+        ? "https://secret-hitler.eu"
+        : "http://localhost:3000",
     methods: ["GET", "POST", "PUT", "DELETE"],
   },
 });
@@ -58,7 +62,7 @@ app.use(
 );
 
 app.use(helmet());
-app.use(cors({ credentials: true, origin: true }));
+app.use(cors({ credentials: true, origin: '*' }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use("/", router);
