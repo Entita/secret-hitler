@@ -10,7 +10,10 @@ const server = require(protocol).createServer();
 const io = require("socket.io")(server, {
   cors: {
     credentials: true,
-    origin: ["http://localhost:3000", "https://secret-hitler.eu"],
+    origin:
+      process.env.NODE_ENV === "production"
+        ? "https://secret-hitler.eu"
+        : "http://localhost:3000",
     methods: ["GET", "POST", "PUT", "DELETE"],
   },
 });
