@@ -65,6 +65,31 @@ const getPlayersFromLobby = async (lobbyID) => {
   return (await findOneFromMongo("code", lobbyID)).players;
 };
 
+const leaveLobby = async (lobbyID, sessionID) => {
+  return await new Promise((resolve) => {
+    Lobby.updateOne(
+      { code: lobbyID },
+      { $pull: { players: sessionID } },
+      (err) => {
+        if (err) throw err;
+        resolve(true);
+      }
+    );
+  });
+};
+
+const deleteLobby = async (lobbyID) => {
+  return await new Promise((resolve) => {
+    Lobby.deleteOne(
+      { code: lobbyID },
+      (err) => {
+        if (err) throw err;
+        resolve(true);
+      }
+    );
+  });
+};
+
 exports.createLobby = createLobby;
 exports.isPlayerInLobby = isPlayerInLobby;
 exports.joinLobby = joinLobby;
@@ -72,3 +97,5 @@ exports.isLobbyFull = isLobbyFull;
 exports.doesLobbyExist = doesLobbyExist;
 exports.createdLobby = createdLobby;
 exports.getPlayersFromLobby = getPlayersFromLobby;
+exports.leaveLobby = leaveLobby;
+exports.deleteLobby = deleteLobby;

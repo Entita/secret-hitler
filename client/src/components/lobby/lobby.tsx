@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { getServerAdress } from "../../utils/config";
 import {
   LobbyPlayersTableStyled,
@@ -8,6 +8,7 @@ import {
 } from "./lobby.style";
 
 export default function Lobby({ socket }: any) {
+  const navigate = useNavigate();
   const params = useParams();
   const [loading, setLoading] = useState<boolean>(true);
   const [loadingText, setLoadingText] = useState<string>(
@@ -26,8 +27,8 @@ export default function Lobby({ socket }: any) {
         setData(data);
         setLoading(false);
 
-        if (data.isPlayerInLobby || data.joinedLobby) {
-          socket.emit("lobby connect");
+        if (data.isPlayerInLobby) {
+          socket.emit("lobby update");
 
           socket.on("lobby update players", () => {
             fetch(getServerAdress() + "/lobby/update_players/" + code, {
@@ -36,6 +37,7 @@ export default function Lobby({ socket }: any) {
             })
               .then((response) => response.json())
               .then((data) => {
+                console.log("updated data", data);
                 setData(data);
               })
               .catch((err) => console.error(err));
@@ -54,7 +56,7 @@ export default function Lobby({ socket }: any) {
         <>{loadingText}</>
       ) : (
         <>
-          {data && (
+          {data.doesLobbyExist && data.isPlayerInLobby && (
             <>
               <span>Created lobby:</span>
               <span>{JSON.stringify(data.createdLobby)}</span>
@@ -69,6 +71,21 @@ export default function Lobby({ socket }: any) {
                   );
                 })}
               </LobbyPlayersTableStyled>
+              <button
+                onClick={() => {
+                  fetch(getServerAdress() + "/lobby/leave/" + code, {
+                    method: "POST",
+                    credentials: "include",
+                  })
+                    .then(() => {
+                      socket.emit("lobby update");
+                      navigate("/");
+                    })
+                    .catch((err) => console.error(err));
+                }}
+              >
+                Leave lobby
+              </button>
             </>
           )}
         </>
