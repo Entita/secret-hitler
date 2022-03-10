@@ -72,9 +72,16 @@ router.post("/lobby/update_players/:id", async (req, res) => {
   try {
     const lobbyID = req.params.id;
 
-    req.session.players = await getPlayersFromLobby(lobbyID);
-    req.session.createdLobby = await createdLobby(lobbyID, req.sessionID);
-    req.session.isLobbyFull = await isLobbyFull(lobbyID);
+    const playerInLobby = (req.session.isPlayerInLobby = await isPlayerInLobby(
+      lobbyID,
+      req.sessionID
+    ));
+
+    if (playerInLobby) {
+      req.session.players = await getPlayersFromLobby(lobbyID);
+      req.session.createdLobby = await createdLobby(lobbyID, req.sessionID);
+      req.session.isLobbyFull = await isLobbyFull(lobbyID);
+    }
 
     res.send(req.session);
   } catch (err) {
@@ -83,14 +90,29 @@ router.post("/lobby/update_players/:id", async (req, res) => {
   }
 });
 
-router.post("/lobby/leave/:id", async (req, res) => {
+router.delete("/lobby/leave/:id", async (req, res) => {
   try {
     const lobbyID = req.params.id;
     await leaveLobby(lobbyID, req.sessionID);
 
-    if (req.session.players.length === 1) await deleteLobby(lobbyID);
+    if (req.session.players && req.session.players.length === 1) await deleteLobby(lobbyID);
 
     res.sendStatus(200);
+  } catch (err) {
+    console.error(err);
+    res.sendStatus(403);
+  }
+});
+
+router.post("/lobby/kick/:id", async (req, res) => {
+  try {
+    const lobbyID = req.params.id;
+    if (req.session.createdLobby) {
+      await leaveLobby(lobbyID, req.body.playerToKick);
+      req.session.players = await getPlayersFromLobby(lobbyID);
+    }
+
+    res.send(req.session);
   } catch (err) {
     console.error(err);
     res.sendStatus(403);

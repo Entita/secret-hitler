@@ -22,9 +22,10 @@ const createLobby = async (playersNum) => {
 };
 
 const isPlayerInLobby = async (lobbyID, sessionID) => {
-  return (await findOneFromMongo("code", lobbyID, false)).players.includes(
-    sessionID
-  );
+  const players = (await findOneFromMongo("code", lobbyID, false)).players;
+
+  if (players === undefined) return false;
+  return players.includes(sessionID);
 };
 
 const doesLobbyExist = async (lobbyID) => {
@@ -43,9 +44,10 @@ const isLobbyFull = async (lobbyID) => {
 };
 
 const createdLobby = async (lobbyID, sessionID) => {
-  return (
-    (await findOneFromMongo("code", lobbyID, false)).players[0] === sessionID
-  );
+  const players = (await findOneFromMongo("code", lobbyID, false)).players;
+
+  if (players === undefined) return false;
+  return players[0] === sessionID;
 };
 
 const joinLobby = async (lobbyID, sessionID) => {
@@ -80,13 +82,10 @@ const leaveLobby = async (lobbyID, sessionID) => {
 
 const deleteLobby = async (lobbyID) => {
   return await new Promise((resolve) => {
-    Lobby.deleteOne(
-      { code: lobbyID },
-      (err) => {
-        if (err) throw err;
-        resolve(true);
-      }
-    );
+    Lobby.deleteOne({ code: lobbyID }, (err) => {
+      if (err) throw err;
+      resolve(true);
+    });
   });
 };
 

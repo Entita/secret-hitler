@@ -1,6 +1,9 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
+if (process.env.NODE_ENV !== "production")
+  require("dotenv").config({ path: ".env.local" });
+
 const lobbySchema = new Schema(
   {
     maxPlayers: {
@@ -18,7 +21,7 @@ const lobbySchema = new Schema(
     },
   },
   { timestamps: true }
-);
+).index({ createdAt: 1 }, { expireAfterSeconds: parseInt(process.env.TTL) });
 
 const Lobby = mongoose.model("lobbies", lobbySchema);
 module.exports = Lobby;
