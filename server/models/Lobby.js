@@ -23,5 +23,7 @@ const lobbySchema = new Schema(
   { timestamps: true }
 ).index({ createdAt: 1 }, { expireAfterSeconds: parseInt(process.env.TTL) });
 
+console.log("TTL", parseInt(process.env.TTL), parseInt(process.env.TTL) * 1000);
+
 const Lobby = mongoose.model("lobbies", lobbySchema);
 module.exports = Lobby;
