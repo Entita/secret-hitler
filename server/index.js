@@ -4,11 +4,10 @@ const cors = require("cors");
 const mongoose = require("mongoose");
 const MongoStore = require("connect-mongo");
 const session = require("express-session");
+require("dotenv").config({ path: ".env" });
 
 const router = require("./handlers/routes");
 const socketHandler = require("./handlers/socket.io");
-if (process.env.NODE_ENV !== "production")
-  require("dotenv").config({ path: ".env.local" });
 
 // Mongo database
 mongoose.connect(process.env.MONGOOSE, {

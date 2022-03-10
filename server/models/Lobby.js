@@ -1,8 +1,6 @@
 const mongoose = require("mongoose");
+require("dotenv").config({ path: ".env" });
 const Schema = mongoose.Schema;
-
-if (process.env.NODE_ENV !== "production")
-  require("dotenv").config({ path: ".env.local" });
 
 const lobbySchema = new Schema(
   {
@@ -19,11 +17,17 @@ const lobbySchema = new Schema(
       type: Array,
       default: [],
     },
+    expiresAt: {
+      type: Date,
+      default: () => {
+        const t = new Date();
+        t.setSeconds(t.getSeconds() + parseInt(process.env.TTL));
+        return t;
+      },
+    },
   },
   { timestamps: true }
-).index({ createdAt: 1 }, { expireAfterSeconds: parseInt(process.env.TTL) });
-
-console.log("TTL", parseInt(process.env.TTL), parseInt(process.env.TTL) * 1000);
+).index({ expiresAt: 1 }, { expireAfterSeconds: 0 });
 
 const Lobby = mongoose.model("lobbies", lobbySchema);
 module.exports = Lobby;
