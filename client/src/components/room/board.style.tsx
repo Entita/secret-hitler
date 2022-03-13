@@ -4,7 +4,7 @@ export const BoardStyled = styled.div<any>`
   position: relative;
   height: ${({ size }) => size + "px"};
   aspect-ratio: 2407/800;
-  background-image: ${({ url }) => "url(" + url + ")"};
+  background-image: ${({ url }) => "url(/img/" + url + ")"};
   background-size: contain;
   background-repeat: no-repeat;
   background-position: center;

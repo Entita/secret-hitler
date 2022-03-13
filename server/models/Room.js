@@ -2,12 +2,8 @@ const mongoose = require("mongoose");
 require("dotenv").config({ path: ".env" });
 const Schema = mongoose.Schema;
 
-const lobbySchema = new Schema(
+const roomSchema = new Schema(
   {
-    maxPlayers: {
-      type: Number,
-      required: true,
-    },
     code: {
       type: String,
       required: true,
@@ -15,7 +11,11 @@ const lobbySchema = new Schema(
     },
     players: {
       type: [String],
-      default: [],
+      required: true,
+    },
+    gamemode: {
+      type: String,
+      default: "normal",
     },
     expiresAt: {
       type: Date,
@@ -29,5 +29,5 @@ const lobbySchema = new Schema(
   { timestamps: true }
 ).index({ expiresAt: 1 }, { expireAfterSeconds: 0 });
 
-const Lobby = mongoose.model("lobbies", lobbySchema);
-module.exports = Lobby;
+const Room = mongoose.model("rooms", roomSchema);
+module.exports = Room;

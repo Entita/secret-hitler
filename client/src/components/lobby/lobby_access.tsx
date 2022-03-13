@@ -12,6 +12,7 @@ import {
 interface Props {
   fetchLeave: Function;
   fetchKick: Function;
+  fetchStart: Function;
   data: {
     doesLobbyExist: boolean;
     isPlayerInLobby: boolean;
@@ -26,15 +27,13 @@ interface Props {
 export default function LobbyAccess({
   fetchLeave,
   fetchKick,
+  fetchStart,
   data,
   code,
 }: Props) {
   const [copyText, setCopyText] = useState<string>("Copy");
-
   return (
     <>
-      <span>Created lobby:</span>
-      <span>{JSON.stringify(data.createdLobby)}</span>
       <CodeContainerStyled>
         <CodeInputStyled value={code} readOnly />
         <CodeCopyStyled
@@ -61,6 +60,9 @@ export default function LobbyAccess({
         })}
       </LobbyPlayersTableStyled>
       <button onClick={() => fetchLeave()}>Leave lobby</button>
+      {data.createdLobby && data.isLobbyFull && (
+        <button onClick={() => fetchStart()}>Start game</button>
+      )}
     </>
   );
 }

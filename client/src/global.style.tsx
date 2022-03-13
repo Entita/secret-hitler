@@ -1,19 +1,12 @@
 import { createGlobalStyle } from "styled-components";
 
 export const GlobalStyle = createGlobalStyle`
-    @font-face {
+    /* @font-face {
         font-family: 'Rockwell';
         src        : url('font/ROCC.ttf');
         font-weight: normal;
         font-style : normal;
-    }
-
-    @font-face {
-        font-family: 'Rockwell_Bold';
-        src        : url('font/rockeb.ttf');
-        font-weight: normal;
-        font-style : normal;
-    }
+    } */
 
     * {
         margin     : 0;

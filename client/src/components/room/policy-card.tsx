@@ -1,10 +1,15 @@
-import { ContainerStyled } from "./policy-card.style";
+import { useState } from "react";
+import {
+  ContainerStyled,
+  PolicyCardStyled,
+  PolicyCardShadowStyled,
+} from "./policy-card.style";
 
 const PolicyCardUrl: any = {
-  liberal: "img/liberal_card.png",
-  fascist: "img/fascist_card.png",
-  not_allowed: "img/not_allowed_card.png",
-  backside: "img/policy_card.png",
+  liberal: "liberal_card.png",
+  fascist: "fascist_card.png",
+  not_allowed: "not_allowed_card.png",
+  backside: "policy_card.png",
 };
 
 interface Props {
@@ -12,14 +17,30 @@ interface Props {
   position: object;
   width: number;
   show: boolean;
+  flipable: boolean;
 }
 
-export default function PolicyCard({ type, position, width, show }: Props) {
+export default function PolicyCard({
+  type,
+  position,
+  width,
+  show,
+  flipable,
+}: Props) {
+  const [clicked, setClicked] = useState<boolean>(false);
+
   return (
     <ContainerStyled
-      width={width}
+      className={flipable && clicked && "flipped"}
       position={position}
-      url={show ? PolicyCardUrl[type] : PolicyCardUrl.backside}
-    />
+      width={width}
+      onClick={() => setClicked(!clicked)}
+      flipable={flipable}
+    >
+      <PolicyCardStyled
+        url={show ? PolicyCardUrl[type] : PolicyCardUrl.backside}
+      />
+      <PolicyCardShadowStyled />
+    </ContainerStyled>
   );
 }

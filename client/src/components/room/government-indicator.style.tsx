@@ -38,7 +38,7 @@ export const GovernmentIndicatorStyled = styled.div<any>`
 
 export const TextStyled = styled.span<any>`
   text-transform: capitalize;
-  font-family: Rockwell_Bold;
+  font-weight: bold;
   font-size: ${({ size }) => size * 0.1 + "px"};
   letter-spacing: 4px;
   color: ${COLOR.white};

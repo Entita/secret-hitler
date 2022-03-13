@@ -21,7 +21,7 @@ const button = styled.button`
   box-shadow: inset 0 0 6px 2px green;
   border-radius: 8px;
   color: whitesmoke;
-  font-family: Rockwell_Bold;
+  font-weight: bold;
   -webkit-text-stroke: 1px green;
   transition: 0.2s ease;
 

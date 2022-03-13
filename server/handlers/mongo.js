@@ -1,9 +1,11 @@
 const crypto = require("crypto");
+const Room = require("../models/Room");
 const Lobby = require("../models/Lobby");
+const GameState = require("../models/GameState");
 
-const findOneFromMongo = async (param, id, dataNull = null) => {
+const findOneFromMongo = async (collection, param, id, dataNull = null) => {
   return await new Promise((resolve) => {
-    Lobby.findOne({ [param]: id }, (err, data) => {
+    collection.findOne({ [param]: id }, (err, data) => {
       if (err) throw err;
       if (data) resolve(data);
       else resolve(dataNull);
@@ -22,7 +24,8 @@ const createLobby = async (playersNum) => {
 };
 
 const isPlayerInLobby = async (lobbyID, sessionID) => {
-  const players = (await findOneFromMongo("code", lobbyID, false)).players;
+  const players = (await findOneFromMongo(Lobby, "code", lobbyID, false))
+    .players;
 
   if (players === undefined) return false;
   return players.includes(sessionID);
@@ -39,12 +42,13 @@ const doesLobbyExist = async (lobbyID) => {
 };
 
 const isLobbyFull = async (lobbyID) => {
-  const data = await findOneFromMongo("code", lobbyID);
+  const data = await findOneFromMongo(Lobby, "code", lobbyID);
   return data.players.length >= data.maxPlayers;
 };
 
 const createdLobby = async (lobbyID, sessionID) => {
-  const players = (await findOneFromMongo("code", lobbyID, false)).players;
+  const players = (await findOneFromMongo(Lobby, "code", lobbyID, false))
+    .players;
 
   if (players === undefined) return false;
   return players[0] === sessionID;
@@ -64,7 +68,7 @@ const joinLobby = async (lobbyID, sessionID) => {
 };
 
 const getPlayersFromLobby = async (lobbyID) => {
-  return (await findOneFromMongo("code", lobbyID)).players;
+  return (await findOneFromMongo(Lobby, "code", lobbyID)).players;
 };
 
 const leaveLobby = async (lobbyID, sessionID) => {
@@ -89,6 +93,33 @@ const deleteLobby = async (lobbyID) => {
   });
 };
 
+const createRoom = async (gameID, players) => {
+  return await Room({
+    players: players,
+    code: gameID,
+  }).save();
+};
+
+const authRoom = async (roomID, sessionID) => {
+  const findRoom = await findOneFromMongo(Room, "code", roomID, false);
+  if (!findRoom) return false;
+
+  const isPlayerInRoom = findRoom.players.includes(sessionID);
+  return isPlayerInRoom;
+};
+
+const getPlayersFromRoom = async (lobbyID) => {
+  return (await findOneFromMongo(Room, "code", lobbyID)).players;
+};
+
+const createGameState = async (gameState) => {
+  return await GameState(gameState).save();
+};
+
+const getGameState = async (lobbyID) => {
+  return await findOneFromMongo(GameState, "code", lobbyID);
+};
+
 exports.createLobby = createLobby;
 exports.isPlayerInLobby = isPlayerInLobby;
 exports.joinLobby = joinLobby;
@@ -98,3 +129,8 @@ exports.createdLobby = createdLobby;
 exports.getPlayersFromLobby = getPlayersFromLobby;
 exports.leaveLobby = leaveLobby;
 exports.deleteLobby = deleteLobby;
+exports.createRoom = createRoom;
+exports.authRoom = authRoom;
+exports.getPlayersFromRoom = getPlayersFromRoom;
+exports.createGameState = createGameState;
+exports.getGameState = getGameState;

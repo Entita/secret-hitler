@@ -1,10 +1,10 @@
 import { RoleCardStyled } from "./role-card.style";
 
 const RoleCardsUrl: any = {
-  fascist: "img/fascist_role.png",
-  liberal: "img/liberal_role.png",
-  hitler: "img/hitler_role.png",
-  backside: "img/secret_role.png",
+  fascist: "fascist_role.png",
+  liberal: "liberal_role.png",
+  hitler: "hitler_role.png",
+  backside: "secret_role.png",
 };
 
 interface Props {

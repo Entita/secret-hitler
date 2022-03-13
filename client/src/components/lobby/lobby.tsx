@@ -19,14 +19,15 @@ export default function Lobby({ socket }: any) {
       method: "POST",
       credentials: "include",
     })
-      .then((response) => response.json())
+      .then((response) => {
+        if (response.status !== 200) throw response;
+        return response.json();
+      })
       .then((data) => {
         setData(data);
         setLoading(false);
 
-        if (data.isPlayerInLobby) {
-          initWebSockets();
-        }
+        if (data.isPlayerInLobby) initWebSockets();
       })
       .catch(() => setLoadingText("Failed to join the lobby"));
   }
@@ -39,12 +40,16 @@ export default function Lobby({ socket }: any) {
         method: "POST",
         credentials: "include",
       })
-        .then((response) => response.json())
-        .then((data) => {
-          console.log("updated data", data);
-          setData(data);
+        .then((response) => {
+          if (response.status !== 200) throw response;
+          return response.json();
         })
+        .then((data) => setData(data))
         .catch((err) => console.error(err));
+    });
+
+    socket.on("game start bc", () => {
+      navigate("/room/" + code);
     });
   }
 
@@ -71,10 +76,33 @@ export default function Lobby({ socket }: any) {
         playerToKick: player,
       }),
     })
-      .then((response) => response.json())
+      .then((response) => {
+        if (response.status !== 200) throw response;
+        return response.json();
+      })
       .then((data) => {
         socket.emit("lobby update");
         setData(data);
+      })
+      .catch((err) => console.error(err));
+  }
+
+  function fetchStart() {
+    fetch(getServerAdress() + "/room/create/" + code, {
+      method: "POST",
+      credentials: "include",
+    })
+      .then((response) => {
+        if (response.status !== 200) throw response;
+        return response.json();
+      })
+      .then((data) => {
+        socket.emit("game start", {
+          code: data.code,
+          players: data.players,
+          gamemode: data.gamemode,
+        });
+        navigate("/room/" + code);
       })
       .catch((err) => console.error(err));
   }
@@ -96,6 +124,7 @@ export default function Lobby({ socket }: any) {
             <LobbyAccess
               fetchLeave={fetchLeave}
               fetchKick={fetchKick}
+              fetchStart={fetchStart}
               data={data}
               code={code}
             />

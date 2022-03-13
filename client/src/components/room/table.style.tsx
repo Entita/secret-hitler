@@ -3,7 +3,7 @@ import styled from "styled-components";
 export const TableStyled = styled.div`
   width: 90vw;
   height: 90vh;
-  background-image: url('img/wood_texture.jpg');
+  background-image: url('/img/wood_texture.jpg');
   background-repeat: no-repeat;
   background-position: center;
   background-size: cover;

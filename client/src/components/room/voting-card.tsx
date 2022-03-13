@@ -1,8 +1,8 @@
 import { VotingCardStyled } from "./voting-card.style";
 
 const VotingCardsUrl: any = {
-  ja: "img/ja_voting_card.png",
-  nein: "img/nein_voting_card.png",
+  ja: "ja_voting_card.png",
+  nein: "nein_voting_card.png",
 };
 
 interface Props {

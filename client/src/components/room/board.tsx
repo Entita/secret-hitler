@@ -2,8 +2,8 @@ import { BoardStyled, ElectionTrackerStyled } from "./board.style";
 import PolicyCard from "./policy-card";
 
 const BoardUrl: any = {
-  liberal: "img/liberal_board.png",
-  fascist: "img/fascist_board.png",
+  liberal: "liberal_board.png",
+  fascist: "fascist_board.png",
 };
 
 interface Props {
@@ -32,6 +32,7 @@ export default function Board({ board }: Props) {
             type={board.type}
             position={{ top: board_top, left: position_left }}
             show={true}
+            flipable={true}
           />
         );
       })}

@@ -10,6 +10,8 @@ const {
   getPlayersFromLobby,
   leaveLobby,
   deleteLobby,
+  createRoom,
+  authRoom,
 } = require("./mongo");
 
 router.post("/lobby/create", async (req, res) => {
@@ -42,11 +44,8 @@ router.post("/lobby/:id", async (req, res) => {
       const playerInLobby = (req.session.isPlayerInLobby =
         await isPlayerInLobby(lobbyID, req.sessionID));
 
+      const lobbyFull = (req.session.isLobbyFull = await isLobbyFull(lobbyID));
       if (!playerInLobby) {
-        const lobbyFull = (req.session.isLobbyFull = await isLobbyFull(
-          lobbyID
-        ));
-
         if (!lobbyFull) {
           req.session.joinSuccess = await joinLobby(lobbyID, req.sessionID);
 
@@ -95,7 +94,8 @@ router.delete("/lobby/leave/:id", async (req, res) => {
     const lobbyID = req.params.id;
     await leaveLobby(lobbyID, req.sessionID);
 
-    if (req.session.players && req.session.players.length === 1) await deleteLobby(lobbyID);
+    if (req.session.players && req.session.players.length === 1)
+      await deleteLobby(lobbyID);
 
     res.sendStatus(200);
   } catch (err) {
@@ -117,6 +117,36 @@ router.post("/lobby/kick/:id", async (req, res) => {
     console.error(err);
     res.sendStatus(403);
   }
+});
+
+router.post("/room/create/:id", async (req, res) => {
+  try {
+    if (!req.session.createdLobby) return res.sendStatus(401);
+    if (!req.session.isLobbyFull) return res.sendStatus(400);
+
+    const roomID = req.params.id;
+    const room = await createRoom(roomID, req.session.players);
+    await deleteLobby(roomID);
+
+    res.send(JSON.stringify(room));
+  } catch (err) {
+    console.error(err);
+    res.sendStatus(403);
+  }
+});
+
+router.post("/room/auth/:id", async (req, res) => {
+  try {
+    if (await authRoom(req.params.id, req.sessionID)) res.sendStatus(200);
+    else res.sendStatus(401);
+  } catch (err) {
+    console.error(err);
+    res.sendStatus(403);
+  }
+});
+
+router.post("/room/get_session_id", async (req, res) => {
+  res.send(JSON.stringify(req.sessionID));
 });
 
 module.exports = router;
