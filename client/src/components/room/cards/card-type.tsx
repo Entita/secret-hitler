@@ -2,18 +2,18 @@ import { useState } from "react";
 import ReactTooltip from "react-tooltip";
 import { CardTypeStyled } from "./card-type.style";
 
-const role_images = [
-  "/img/fascist_role.png",
-  "/img/liberal_role.png",
-  "/img/hitler_role.png",
-  "/img/secret_role.png",
-];
+const role_images:any = {
+  fascist: "/img/fascist_role.png",
+  liberal: "/img/liberal_role.png",
+  hitler: "/img/hitler_role.png",
+  backside: "/img/secret_role.png",
+};
 
-const party_images = [
-  "/img/fascist_party.png",
-  "/img/liberal_party.png",
-  "/img/secret_party.png",
-];
+const party_images:any = {
+  fascist: "/img/fascist_party.png",
+  liberal: "/img/liberal_party.png",
+  backside: "/img/secret_party.png",
+};
 
 interface Props {
   type: string;
@@ -42,11 +42,11 @@ export default function CardType({ type, role, size }: Props) {
           src={
             show
               ? type === "role"
-                ? role_images[0]
-                : party_images[0]
+                ? role_images[role]
+                : party_images[role]
               : type === "role"
-              ? role_images[3]
-              : party_images[2]
+              ? role_images.backside
+              : party_images.backside
           }
           alt={type + " card-" + role}
         />
