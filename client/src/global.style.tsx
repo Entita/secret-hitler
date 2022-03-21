@@ -21,5 +21,10 @@ export const GlobalStyle = createGlobalStyle`
     input {
         outline: none;
     }
-
+    .react-draggable {
+        cursor: move;
+    }
+    .tooltip {
+        width: max-content;
+    }
 `;

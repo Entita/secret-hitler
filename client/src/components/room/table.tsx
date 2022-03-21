@@ -1,9 +1,6 @@
 import Board from "./board";
-import GovernmentIndicator from "./government-indicator";
-import PolicyCard from "./policy-card";
-import RoleCard from "./role-card";
 import { TableStyled } from "./table.style";
-import VotingCard from "./voting-card";
+import Players from "./players";
 
 interface Props {
   fascistBoard: {
@@ -19,30 +16,39 @@ interface Props {
     size: number;
     election_tracker: number;
   };
+  players: Array<object>;
+  tableSize: {
+    width: number;
+    height: number;
+  };
+  drawPileCount: number;
+  discardPileCount: number;
 }
 
-export default function Table({ fascistBoard, liberalBoard }: Props) {
+export default function Table({
+  fascistBoard,
+  liberalBoard,
+  players,
+  tableSize,
+  drawPileCount,
+  discardPileCount,
+}: Props) {
   return (
     <TableStyled>
-      <Board board={fascistBoard} />
-      <Board board={liberalBoard} />
-
-      <PolicyCard
-        width={fascistBoard.size / 2.8}
-        type="not_allowed"
-        position={{ top: 0, left: 0 }}
-        show={false}
-        flipable={false}
+      <Players players={players} parentSize={tableSize} />
+      <Board
+        board={fascistBoard}
+        drawPileCount={drawPileCount}
+        discardPileCount={discardPileCount}
+      />
+      <Board
+        board={liberalBoard}
+        drawPileCount={drawPileCount}
+        discardPileCount={discardPileCount}
       />
 
       {/* <VotingCard type="ja" size={100} /> */}
-      <VotingCard type="nein" size={100} />
-
-      {/* <RoleCard type="fascist" size={100} show={false} />
-      <RoleCard type="liberal" size={100} show={true} /> */}
-      <RoleCard type="hitler" size={100} show={true} />
-      {/* <GovernmentIndicator type="chancellor" rotate={-12.5} size={200} /> */}
-      <GovernmentIndicator type="president" rotate={-8} size={150} />
+      {/* <VotingCard type="nein" size={100} /> */}
     </TableStyled>
   );
 }

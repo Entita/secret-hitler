@@ -23,6 +23,7 @@
     "helmet": "^5.0.2",
     "mongoose": "^6.2.4",
     "socket.io": "^4.4.1",
-    "underscore": "^1.13.2"
+    "underscore": "^1.13.2",
+    "unique-names-generator": "^4.7.1"
   }
 }

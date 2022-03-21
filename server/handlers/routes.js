@@ -12,6 +12,7 @@ const {
   deleteLobby,
   createRoom,
   authRoom,
+  findRoom,
 } = require("./mongo");
 
 router.post("/lobby/create", async (req, res) => {
@@ -137,8 +138,11 @@ router.post("/room/create/:id", async (req, res) => {
 
 router.post("/room/auth/:id", async (req, res) => {
   try {
-    if (await authRoom(req.params.id, req.sessionID)) res.sendStatus(200);
-    else res.sendStatus(401);
+    const room = await findRoom(req.params.id);
+    const auth = await authRoom(room, req.sessionID);
+    if (!room) return res.sendStatus(404);
+    if (!auth) return res.sendStatus(401);
+    res.sendStatus(200);
   } catch (err) {
     console.error(err);
     res.sendStatus(403);

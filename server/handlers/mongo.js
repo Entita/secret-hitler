@@ -100,12 +100,13 @@ const createRoom = async (gameID, players) => {
   }).save();
 };
 
-const authRoom = async (roomID, sessionID) => {
-  const findRoom = await findOneFromMongo(Room, "code", roomID, false);
-  if (!findRoom) return false;
+const findRoom = async (roomID) => {
+  return await findOneFromMongo(Room, "code", roomID, false);
+};
 
-  const isPlayerInRoom = findRoom.players.includes(sessionID);
-  return isPlayerInRoom;
+const authRoom = async (room, sessionID) => {
+  if (!room) return false;
+  return room.players.includes(sessionID);
 };
 
 const getPlayersFromRoom = async (lobbyID) => {
@@ -131,6 +132,7 @@ exports.leaveLobby = leaveLobby;
 exports.deleteLobby = deleteLobby;
 exports.createRoom = createRoom;
 exports.authRoom = authRoom;
+exports.findRoom = findRoom;
 exports.getPlayersFromRoom = getPlayersFromRoom;
 exports.createGameState = createGameState;
 exports.getGameState = getGameState;

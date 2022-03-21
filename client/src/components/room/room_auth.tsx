@@ -18,8 +18,10 @@ export function RoomAuth({ socket }: any) {
       credentials: "include",
     })
       .then((response) => {
-        if (response.status !== 200) return setAuthError("Not authorized");
-        setAuth(true);
+        if (response.status === 200) return setAuth(true);
+        else if (response.status === 401) return setAuthError("Not authorized");
+        else if (response.status === 404) return setAuthError("Room doesn't exist");
+        return setAuthError("Unknown error");
       })
       .catch((err) => console.error(err));
   }, [code]);

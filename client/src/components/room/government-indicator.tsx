@@ -6,14 +6,15 @@ import {
 } from "./government-indicator.style";
 
 interface Props {
+  position?: object;
   type: string;
   rotate: number;
   size: number;
 }
 
-export default function GovernmentIndicator({ type, rotate, size }: Props) {
+export default function GovernmentIndicator({ position, type, rotate, size }: Props) {
   return (
-    <ContainerStyled rotate={rotate}>
+    <ContainerStyled rotate={rotate} position={position}>
       <HiddenContainerStyled size={size}>
         <GovernmentIndicatorStyled type={type} size={size}>
           <TextStyled size={size}>{type}</TextStyled>

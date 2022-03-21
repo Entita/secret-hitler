@@ -11,6 +11,32 @@ class Game {
   }
 
   getPlayerGameState(sessionID) {
+    const arrayMove = (arr, fromIndex, toIndex) => {
+      var element = arr[fromIndex];
+      arr.splice(fromIndex, 1);
+      arr.splice(toIndex, 0, element);
+    };
+
+    const createPlayerArray = () => {
+      const players = [];
+      let meIndex;
+      let index = 0;
+
+      for (const key in gameState.players) {
+        if (gameState.players[key].id === sessionID) meIndex = index;
+        players.push({
+          id: gameState.players[key].id,
+          name: gameState.players[key].name,
+          president: gameState.players[key].id === gameState.president,
+          chancellor: gameState.players[key].id === gameState.chancellor,
+        });
+        index++;
+      }
+      arrayMove(players, meIndex, 0);
+
+      return players;
+    };
+
     const gameState = this.gameState;
     const player = this.objFindByParam(gameState.players, "id", sessionID);
     const role = player.role;
@@ -23,11 +49,11 @@ class Game {
       role: role,
       party: party,
       policyCards: policyCards,
-      gameStateMessage: gameState.gameStateMessage,
       gameOver: gameState.gameOver,
       turn: gameState.turn,
+      players: createPlayerArray(),
       chancellor: gameState.chancellor,
-      proposedChancellor: gameState.proposedChancellor,
+      nominatedChancellor: gameState.nominatedChancellor,
       president: gameState.president,
       liberalCards: gameState.liberalCards,
       fascistCards: gameState.fascistCards,
@@ -36,6 +62,9 @@ class Game {
       votes: gameState.votes,
       action: gameState.action,
       history: gameState.history,
+      numOfPlayers: gameState.players.length,
+      drawPileCount: gameState.drawPileCount,
+      discardPileCount: gameState.discardPileCount,
     };
   }
 }

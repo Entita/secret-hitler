@@ -1,3 +1,9 @@
+const {
+  uniqueNamesGenerator,
+  adjectives,
+  animals,
+  colors,
+} = require("unique-names-generator");
 const Stack = require("./stack");
 
 const initGameState = async (code, players) => {
@@ -24,9 +30,16 @@ const initPlayers = (players) => {
   const roles = getRandomizedRoles(players.length);
 
   players.forEach((player, index) => {
+    const shortName = uniqueNamesGenerator({
+      dictionaries: [adjectives, animals, colors],
+      separator: " ",
+      length: 2,
+    });
+
     playersWAttr.push({
       id: player,
       role: roles[index],
+      name: shortName,
     });
   });
 

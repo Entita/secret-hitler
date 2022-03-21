@@ -2,8 +2,13 @@ import styled from "styled-components";
 import { COLOR } from "../../utils/color";
 
 export const ContainerStyled = styled.div<any>`
+  position: relative;
   z-index: 0;
   transform: ${({ rotate }) => "rotate(" + rotate + "deg)"};
+  left: ${({ position }) => position.left};
+  right: ${({ position }) => position.right};
+  top: ${({ position }) => position.top};
+  bottom: ${({ position }) => position.bottom};
 `;
 
 export const HiddenContainerStyled = styled.div<any>`
